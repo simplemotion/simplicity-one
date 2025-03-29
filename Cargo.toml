@@ -1,0 +1,22 @@
+[package]
+name = "Simplicity-One"
+version = "0.0.1"
+edition = "2021"
+authors = ["Greg Gowans"]
+description = "Rust Libraries for Simplicity-One"
+license = "MIT OR Apache-2.0"
+homepage = "https://one.simplemotion.dev"
+repository = "https://github.com/SimpleMotion/Simplicity-One"
+readme = "README.md"
+
+[workspace]
+
+[lib]
+name = "sm_one_lib"              # The name of the target.
+path = "_lib/sm_one_lib.rs"      # The source file of the target.
+
+[[bin]]
+	name = "sm-one"
+	path = "_src/sm_one.rs"
+
+[dependencies]
