@@ -12,8 +12,8 @@ readme = "README.md"
 [workspace]
 
 [lib]
-name = "sm_one_lib"              # The name of the target.
-path = "_lib/sm_one_lib.rs"      # The source file of the target.
+    name = "sm_one_lib"              # The name of the target.
+    path = "_lib/sm_one_lib.rs"      # The source file of the target.
 
 [[bin]]
 	name = "sm-one"
