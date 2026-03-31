@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# SimpleMotion Simplicity One Bootstrap
+# ==============================================================================
+# Usage:
+#   curl -fsSL https://simplicity-one.simplemotion.com | bash
+#
+# Prerequisites:
+#   - GitHub CLI (gh) authenticated with repo access
+#   - Rust toolchain (rustup, cargo)
+#
+# This script clones and sets up the Simplicity v4 development environment.
+# ==============================================================================
+
+set -euo pipefail
+
+WORK_DIR="${HOME}/SimpleMotion/30-Design/349002-SM-Simplicity-04"
+
+info()  { printf '\033[1;34m==>\033[0m %s\n' "$1"; }
+error() { printf '\033[1;31mERROR:\033[0m %s\n' "$1" >&2; exit 1; }
+
+# --- Preflight checks --------------------------------------------------------
+
+command -v gh    >/dev/null 2>&1 || error "GitHub CLI (gh) is required. Install: https://cli.github.com"
+command -v rustc >/dev/null 2>&1 || error "Rust is required. Install: https://rustup.rs"
+command -v cargo >/dev/null 2>&1 || error "Cargo is required. Install: https://rustup.rs"
+
+gh auth status >/dev/null 2>&1 || error "Not authenticated. Run: gh auth login"
+
+# --- Rust toolchain check ----------------------------------------------------
+
+info "Checking Rust toolchain"
+RUST_VERSION=$(rustc --version)
+CARGO_VERSION=$(cargo --version)
+printf '  %s\n  %s\n' "$RUST_VERSION" "$CARGO_VERSION"
+
+# --- Clone / update repository ------------------------------------------------
+
+if [ -d "${WORK_DIR}" ]; then
+  info "Updating existing Simplicity workspace"
+  cd "${WORK_DIR}"
+  git pull --ff-only 2>/dev/null || info "Pull skipped — local changes present"
+else
+  info "Creating workspace at ${WORK_DIR}"
+  mkdir -p "$(dirname "${WORK_DIR}")"
+  gh repo clone 3400-0000-SimpleMotion-Software/349002-SM-Simplicity-04 "${WORK_DIR}"
+  cd "${WORK_DIR}"
+fi
+
+# --- Build --------------------------------------------------------------------
+
+info "Building Simplicity One (release)"
+cargo build --release 2>&1
+
+info "Build complete"
+info "Workspace: ${WORK_DIR}"
+info "Binary:    ${WORK_DIR}/target/release/"
+
+printf '\n\033[1;32mSimplicity One is ready.\033[0m\n'
